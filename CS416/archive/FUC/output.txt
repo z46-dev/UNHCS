@@ -1,0 +1,89 @@
+Program:
+    children:
+        PreprocessorDirective:
+            directive: #define
+            name: FOO
+            value: 1
+        PreprocessorDirective:
+            directive: #define
+            name: BAR
+            value: 2.5
+        FunctionDeclaration:
+            name: noPointers
+            returnType: void
+            isPrivate: false
+            children:
+                Parameters:
+                    children:
+                        Parameter:
+                            type: int
+                            name: x
+                Block:
+                    children:
+                        ExpressionStatement:
+                            children:
+                                AssignmentExpression:
+                                    operator: *=
+                                    children:
+                                        Identifier:
+                                            name: x
+                                        Literal:
+                                            value: 2
+                                            type: number
+        ExpressionStatement:
+            children:
+                AssignmentExpression:
+                    operator: =
+                    children:
+                        MemberAccess:
+                            name: y
+                            children:
+                                Identifier:
+                                    name: this
+                        Identifier:
+                            name: y
+        VariableDeclaration:
+            name: list
+            type: int
+            isPrivate: false
+            children:
+                ArrayInitializer:
+                    children:
+                        Literal:
+                            value: 1
+                            type: number
+                        Literal:
+                            value: 2
+                            type: number
+                        Literal:
+                            value: 3
+                            type: number
+                        Literal:
+                            value: 4
+                            type: number
+                        Literal:
+                            value: 5
+                            type: number
+        ExpressionStatement:
+            children:
+                AssignmentExpression:
+                    operator: =
+                    children:
+                        Identifier:
+                            name: y
+                        Literal:
+                            value: 0
+                            type: number
+        ExpressionStatement:
+            children:
+                CallExpression:
+                    children:
+                        Identifier:
+                            name: printf
+                        CallExpression:
+                            children:
+                                MemberAccess:
+                                    name: getProduct
+                                    children:
+                                        Identifier:
+                                            name: myClass
