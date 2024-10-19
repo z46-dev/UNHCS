@@ -6,14 +6,14 @@
 #define FLAG_VALIDITY 1
 #define FLAG_EXIT 2
 
-#include <ctype.h>
-
+// Check if the number is valid or not
 int isValidNumber(const char *str) {
     char *end;
     strtod(str, &end);
     return *end == '\0' && *str != '\0';
 }
 
+// Read input and determine if it's valid or not and if we should exit or not
 int userInput(char input[], int *flags) {
     if (scanf("%s", input) == EOF) {
         *flags = FLAG_EXIT;
@@ -39,6 +39,7 @@ int userInput(char input[], int *flags) {
     return atoi(input);
 }
 
+// Main function to read, parse, and interpret data
 int calSpan(int maxSize, char *filename, double data[]) {
     FILE *file = fopen(filename, "r");
 
@@ -75,6 +76,8 @@ int calSpan(int maxSize, char *filename, double data[]) {
                 printf("Data at minute %d is a %d-minute high\n", value, span);
             }
         }
+
+        // The above could have been nicer using break/continues in my opinion
     }
 
     return i;
