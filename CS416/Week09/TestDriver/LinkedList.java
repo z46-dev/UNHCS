@@ -73,21 +73,27 @@ public class LinkedList<T> extends List<T> {
             this.tail = node;
         } else {
             Node current = this.head;
-            int i = 0;
             while (current != null) {
                 if (current.value.equals(value)) {
                     return;
                 }
 
+                current = current.next;
+            }
+
+            current = this.head;
+            int i = 0;
+            while (current != null) {
                 if (i == index) {
-                    node.prev = current.prev;
-                    node.next = current;
-                    current.prev = node;
-                    if (node.prev != null) {
-                        node.prev.next = node;
+                    if (current.prev != null) {
+                        current.prev.next = node;
+                        node.prev = current.prev;
                     } else {
                         this.head = node;
                     }
+
+                    node.next = current;
+                    current.prev = node;
                     return;
                 }
 
@@ -262,24 +268,5 @@ public class LinkedList<T> extends List<T> {
         }
 
         return size;
-    }
-
-    /**
-     * A class representing a node in the linked list.
-     */
-    public class Node {
-        T value;
-        Node prev;
-        Node next;
-
-        /**
-         * Constructor.
-         * @param value The value
-         */
-        public Node(T value) {
-            this.value = value;
-            this.prev = null;
-            this.next = null;
-        }
     }
 }
