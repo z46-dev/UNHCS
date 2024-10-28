@@ -11,4 +11,4 @@ Repository of my UNH Computer Science course programming projects/assignments fo
 
 ## Other
 1. CS722, Cloud Computing Systems, N/A, Aleksey Charapko
- - I'm not in this course, but I sit in on it from time to time and will implement concepts that I would like to become more familiar with
+    - I'm not in this course, but I sit in on it from time to time and will implement concepts that I would like to become more familiar with
