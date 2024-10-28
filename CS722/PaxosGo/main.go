@@ -14,7 +14,7 @@ func testServer() {
 	var server *fakeserver.FakeServer = fakeserver.NewFakeServer(fakeserver.ReliancyConfig{
 		IsUnreliable:   true,
 		LogMode:        true,
-		MaximumLatency: 1000,
+		MaximumLatency: 65,
 		DropChance:     .25,
 	})
 
@@ -33,7 +33,7 @@ func testServer() {
 	// Do stuff
 	for i := 0; i < 10; i++ {
 		go func() {
-			time.Sleep(time.Duration(rand.Intn(1000)) * time.Millisecond)
+			time.Sleep(time.Duration(rand.Intn(3000)) * time.Millisecond)
 			client1.SendTo(client2.ID, []byte(fmt.Sprintf("Routine %d", i)))
 		}()
 	}

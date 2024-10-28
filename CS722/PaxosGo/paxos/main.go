@@ -2,6 +2,7 @@ package paxos
 
 type PaxosMember struct {
 	memberID, ballotID uint32
+	Key, Value         string
 }
 
 func (m *PaxosMember) GetID() uint32 {
@@ -10,8 +11,6 @@ func (m *PaxosMember) GetID() uint32 {
 
 type PaxosProposer struct {
 	*PaxosMember
-
-	Key, Value string
 }
 
 type PaxosAcceptor struct {
@@ -37,13 +36,13 @@ var memberID uint32
 func NewProposer() *PaxosProposer {
 	memberID = memberID + 1
 	return &PaxosProposer{
-		PaxosMember: &PaxosMember{memberID - 1, 0},
+		PaxosMember: &PaxosMember{memberID: memberID - 1},
 	}
 }
 
 func NewAcceptor() *PaxosAcceptor {
 	memberID = memberID + 1
 	return &PaxosAcceptor{
-		PaxosMember: &PaxosMember{memberID - 1, 0},
+		PaxosMember: &PaxosMember{memberID: memberID - 1},
 	}
 }
