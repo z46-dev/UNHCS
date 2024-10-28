@@ -1,6 +1,0 @@
-{
-    "files.associations": {
-        "stdlib.h": "c"
-    },
-    "java.debug.settings.onBuildFailureProceed": true
-}
