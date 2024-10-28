@@ -19,7 +19,7 @@ var Log Logger
 var clientID int = 0
 
 type ReliancyConfig struct {
-	IsUnreliable, LogMode      bool
+	IsUnreliable               bool
 	MaximumLatency, DropChance float64
 }
 
@@ -53,7 +53,7 @@ func (s *FakeServer) GetClient(id int) *FakeClient {
 func (s *FakeServer) msg(fromID int, client *FakeClient, content []byte) {
 	// Simulated packet loss
 	if s.Config.IsUnreliable && rand.Float64() < s.Config.DropChance {
-		Log.DropPacket(client.ID, content)
+		Log.DropPacket(client.ID, fromID)
 		return
 	}
 

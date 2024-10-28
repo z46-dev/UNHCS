@@ -10,5 +10,7 @@ Repository of my UNH Computer Science course programming projects/assignments fo
 2. CS515
 
 ## Other
-1. CS722, Cloud Computing Systems, N/A, Aleksey Charapko
+1. CS722/822, Cloud Computing Systems, N/A, Aleksey Charapko
     - I'm not in this course, but I sit in on it from time to time and will implement concepts that I would like to become more familiar with
+2. CS725/825 & IT725, Computer Networks, Radim Bartos
+    - Same deal as Cloud Computing, mostly there for some good Notes

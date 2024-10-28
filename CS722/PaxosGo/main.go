@@ -3,17 +3,18 @@ package main
 import (
 	"fmt"
 	"math/rand"
+	"os"
 	"time"
 
 	"paxos.eparker.dev/fakeserver"
+	"paxos.eparker.dev/paxos"
 )
 
-func testServer() {
+func TestServer() {
 	// Initialize server
 	fakeserver.Log.Status("Starting server...")
 	var server *fakeserver.FakeServer = fakeserver.NewFakeServer(fakeserver.ReliancyConfig{
 		IsUnreliable:   true,
-		LogMode:        true,
 		MaximumLatency: 120,
 		DropChance:     .25,
 	})
@@ -47,5 +48,36 @@ func testServer() {
 }
 
 func main() {
-	testServer()
+	for _, arg := range os.Args[1:] {
+		if arg == "test" {
+			TestServer()
+			return
+		}
+	}
+
+	var server *fakeserver.FakeServer = fakeserver.NewFakeServer(fakeserver.ReliancyConfig{
+		IsUnreliable:   true,
+		MaximumLatency: 120,
+		DropChance:     .1,
+	})
+
+	var acceptors []*paxos.PaxosAcceptor = make([]*paxos.PaxosAcceptor, 3)
+	var proposer = paxos.NewProposer(fakeserver.NewFakeClient(server))
+
+	for i := 0; i < 3; i++ {
+		acceptors[i] = paxos.NewAcceptor(fakeserver.NewFakeClient(server))
+		acceptors[i].Client.OnMessage = func(content []byte) {
+			var proposerID, ballotID = content[0], content[1]
+
+			if ballotID <= byte(acceptors[i].AcceptedBallotID) {
+				acceptors[i].Client.SendTo(int(proposerID), []byte{0})
+			} else {
+				acceptors[i].AcceptedBallotID = uint32(ballotID)
+				acceptors[i].Client.SendTo(int(proposerID), []byte{1})
+			}
+		}
+
+		proposer.LearnAcceptor(acceptors[i].GetID())
+	}
+
 }

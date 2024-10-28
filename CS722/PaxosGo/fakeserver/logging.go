@@ -57,8 +57,8 @@ func (l *Logger) ClientRemove(client *FakeClient) {
 	fmt.Printf("%s[-]%s Client %d removed\n", Red, Reset, client.ID)
 }
 
-func (l *Logger) DropPacket(id int, content []byte) {
-	fmt.Printf("%s[:]%s Dropped packet from %d\n", Yellow, Reset, id)
+func (l *Logger) DropPacket(from, to int) {
+	fmt.Printf("%s[:]%s Dropped packet from %d to %d\n", Yellow, Reset, from, to)
 }
 
 func (l *Logger) Send(from, to int, latency float64) {
