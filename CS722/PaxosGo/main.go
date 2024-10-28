@@ -3,13 +3,21 @@ package main
 import (
 	"fmt"
 
-	"paxos.eparker.dev/paxos"
+	"paxos.eparker.dev/fakeserver"
 )
 
 func main() {
-	proposer := paxos.NewProposer()
-	fmt.Println(proposer.GetID())
+	var server *fakeserver.FakeServer = fakeserver.NewFakeServer()
 
-	acceptor := paxos.NewAcceptor()
-	fmt.Println(acceptor.GetID())
+	var client1 *fakeserver.FakeClient = fakeserver.NewFakeClient(server)
+	client1.OnMessage = func(content []byte) {
+		server.Send(client1.ID+1, content)
+	}
+
+	var client2 *fakeserver.FakeClient = fakeserver.NewFakeClient(server)
+	client2.OnMessage = func(content []byte) {
+		fmt.Println(string(content))
+	}
+
+	client2.Send([]byte("Hello, World!"))
 }
