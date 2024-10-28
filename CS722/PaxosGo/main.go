@@ -14,7 +14,7 @@ func testServer() {
 	var server *fakeserver.FakeServer = fakeserver.NewFakeServer(fakeserver.ReliancyConfig{
 		IsUnreliable:   true,
 		LogMode:        true,
-		MaximumLatency: 65,
+		MaximumLatency: 120,
 		DropChance:     .25,
 	})
 
