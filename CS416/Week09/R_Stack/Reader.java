@@ -1,12 +1,21 @@
 import java.util.Scanner;
 import java.util.Stack;
 
+/**
+ * @author Evan Parker
+ * @version :(
+ */
 public class Reader {
+    /**
+     * . Break checkstyle by putting periods in weird places!
+     * @param args the command line arguments
+     */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Enter a string: ");
         String input = scanner.nextLine();
+        scanner.close();
 
         char[] opens = {'(', '[', '{', '<'};
         char[] closes = {')', ']', '}', '>'};
