@@ -6,4 +6,4 @@ Why? Because cloud computing interests me a lot
 
 ## What???
 1. Multi-Paxos (Go)
-2. idk i've only gone to one lecture so far
+2. MapReduce - Search engine for books

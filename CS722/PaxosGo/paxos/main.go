@@ -46,16 +46,16 @@ func (p *PaxosProposer) Campaign() bool {
 	// Wait for responses
 	var (
 		//responses   map[int]bool
-		remaining, yes int = len(p.knownAcceptors), 0
-		waitChannel        = make(chan bool)
+		remaining, responses, yes int = len(p.knownAcceptors), 0, 0
+		waitChannel                   = make(chan bool)
 	)
 
 	p.Client.OnMessage = func(b []byte) {
-		// Process the response
 		remaining--
+		responses++
 		yes += int(b[0])
 
-		// Check if we have a majority
+		// When we're all done, send a signal
 		if remaining == 0 {
 			waitChannel <- true
 		}
@@ -69,7 +69,7 @@ func (p *PaxosProposer) Campaign() bool {
 
 	<-waitChannel
 
-	return yes > remaining/2
+	return yes > responses/2
 }
 
 type PaxosAcceptor struct {
