@@ -67,6 +67,8 @@ func (p *PaxosProposer) Campaign() bool {
 		waitChannel <- false
 	}()
 
+	<-waitChannel
+
 	return yes > remaining/2
 }
 

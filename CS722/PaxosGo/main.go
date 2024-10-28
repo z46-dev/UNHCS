@@ -58,7 +58,7 @@ func main() {
 	var server *fakeserver.FakeServer = fakeserver.NewFakeServer(fakeserver.ReliancyConfig{
 		IsUnreliable:   true,
 		MaximumLatency: 120,
-		DropChance:     .1,
+		DropChance:     .2,
 	})
 
 	var acceptors []*paxos.PaxosAcceptor = make([]*paxos.PaxosAcceptor, 3)
@@ -80,4 +80,12 @@ func main() {
 		proposer.LearnAcceptor(acceptors[i].GetID())
 	}
 
+	var startTime = time.Now()
+	if proposer.Campaign() {
+		fmt.Println("Campaign successful")
+	} else {
+		fmt.Println("Campaign failed")
+	}
+
+	fmt.Printf("Campaign took %.2fs\n", float64(time.Since(startTime).Milliseconds())/1000)
 }

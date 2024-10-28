@@ -14,3 +14,7 @@ Repository of my UNH Computer Science course programming projects/assignments fo
     - I'm not in this course, but I sit in on it from time to time and will implement concepts that I would like to become more familiar with
 2. CS725/825 & IT725, Computer Networks, Radim Bartos
     - Same deal as Cloud Computing, mostly there for some good Notes
+
+
+## Extra Stuff
+- https://asciiflow.com/#/ `◄───` tool for ascii charts
