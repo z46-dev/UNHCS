@@ -2,7 +2,7 @@ package fakeserver
 
 import "fmt"
 
-const (
+const ( // AI making my life easier
 	Reset      = "\033[0m"
 	Bold       = "\033[1m"
 	Red        = "\033[31m"
@@ -19,12 +19,30 @@ const (
 	BoldPurple = "\033[1;35m"
 	BoldCyan   = "\033[1;36m"
 	BoldWhite  = "\033[1;37m"
+	BlackBg    = "\033[40m"
+	RedBg      = "\033[41m"
+	GreenBg    = "\033[42m"
+	YellowBg   = "\033[43m"
+	BlueBg     = "\033[44m"
+	MagentaBg  = "\033[45m"
+	CyanBg     = "\033[46m"
+	WhiteBg    = "\033[47m"
 )
+
+/**
+ * Logger which makes things easier
+ * since these are pretty functions
+ * for repetitive logging tasks
+ */
 
 type Logger struct{}
 
 func (l *Logger) Basic(message string) {
 	fmt.Printf("%s[>]%s %s\n", Cyan, Reset, message)
+}
+
+func (l *Logger) Status(message string) {
+	fmt.Printf("%s[@]%s %s\n", Magenta, Reset, message)
 }
 
 func (l *Logger) Error(message string) {
@@ -48,5 +66,5 @@ func (l *Logger) Send(from, to int, latency float64) {
 }
 
 func (l *Logger) Broadcast(from int) {
-	fmt.Printf("%s[=]%s Broadcast from %d\n", Magenta, Reset, from)
+	fmt.Printf("%s[=]%s Broadcast from %d\n", Blue, Reset, from)
 }

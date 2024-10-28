@@ -1,16 +1,21 @@
 package main
 
 import (
+	"fmt"
+	"math/rand"
+	"time"
+
 	"paxos.eparker.dev/fakeserver"
 )
 
-func main() {
-	// Initialize
-	var server *fakeserver.FakeServer = fakeserver.NewFakeServer(&fakeserver.ReliancyConfig{
+func testServer() {
+	// Initialize server
+	fakeserver.Log.Status("Starting server...")
+	var server *fakeserver.FakeServer = fakeserver.NewFakeServer(fakeserver.ReliancyConfig{
 		IsUnreliable:   true,
 		LogMode:        true,
-		MaximumLatency: 1500,
-		DropChance:     .1,
+		MaximumLatency: 1000,
+		DropChance:     .25,
 	})
 
 	var client1 *fakeserver.FakeClient = fakeserver.NewFakeClient(server)
@@ -26,12 +31,21 @@ func main() {
 	}
 
 	// Do stuff
-	client1.SendTo(client2.ID, []byte("Hello, World!"))
+	for i := 0; i < 10; i++ {
+		go func() {
+			time.Sleep(time.Duration(rand.Intn(1000)) * time.Millisecond)
+			client1.SendTo(client2.ID, []byte(fmt.Sprintf("Routine %d", i)))
+		}()
+	}
 
 	// Close after timeout
 	client1.SetClosure(3000)
 	client2.SetClosure(3000)
 
-	// Keep alive
-	select {}
+	server.Wait()
+	fakeserver.Log.Status("All clients closed, server destroyed")
+}
+
+func main() {
+	testServer()
 }
