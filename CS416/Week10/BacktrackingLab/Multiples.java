@@ -39,7 +39,7 @@ public class Multiples {
      * @param i The index of the number to assign
      * @param n The index in the result array to assign the value to
      */
-    public void assignValue(int i, int n) {
+    public void assignValue(int n, int i) {
         result[n] = numbers.get(i);
         numbers.remove(i);
     }
@@ -48,11 +48,11 @@ public class Multiples {
      * Method to unassign a value from the result array and add it back to the
      * numbers list.
      * 
-     * @param i The index in the result array to unassign
+     * @param n The index in the result array to unassign
      */
-    public void unassignValue(int i) {
-        numbers.add(result[i]);
-        result[i] = 0;
+    public void unassignValue(int n) {
+        numbers.add(0, result[n]);
+        result[n] = 0;
     }
 
     /**
@@ -79,8 +79,8 @@ public class Multiples {
         }
 
         for (int i = 0; i < numbers.size(); i++) {
-            if (n == 0 || isMultiple(numbers.get(i), result[n - 1])) {
-                assignValue(i, n);
+            if (isMultiple(numbers.get(i), n + 1)) {
+                assignValue(n, i);
                 if (solve(n + 1)) {
                     return true;
                 }
