@@ -13,3 +13,5 @@
     - Run the paxos test
 4. `paxos-ellection`
     - Run the paxos election test
+5. `colors`
+    - Prints the colors the program can utilize
