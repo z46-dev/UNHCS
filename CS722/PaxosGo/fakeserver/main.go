@@ -53,7 +53,7 @@ func (s *FakeServer) GetClient(id int) *FakeClient {
 func (s *FakeServer) msg(fromID int, client *FakeClient, content []byte) {
 	// Simulated packet loss
 	if s.Config.IsUnreliable && rand.Float64() < s.Config.DropChance {
-		Log.DropPacket(client.ID, fromID)
+		Log.DropPacket(fromID, client.ID)
 		return
 	}
 
@@ -129,6 +129,8 @@ func NewFakeClient(server *FakeServer) *FakeClient {
 		if client.closureTimer != nil {
 			client.closureTimer.Reset(time.Duration(client.closesAfterMillis) * time.Millisecond)
 		}
+
+		Log.Receive(client.ID, len(content))
 
 		if client.OnMessage != nil {
 			client.OnMessage(content)

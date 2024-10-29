@@ -76,7 +76,7 @@ func (p *PaxosProposer) Campaign() struct {
 		Success               bool
 		Responses, Yes, Asked int
 	}{
-		Success:   yes > responses/2,
+		Success:   yes > responses/2 && responses > (responses+remaining)/2,
 		Responses: responses,
 		Yes:       yes,
 		Asked:     responses + remaining,

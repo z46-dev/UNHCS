@@ -91,6 +91,10 @@ func (l *Logger) Send(from, to int, latency float64) {
 	fmt.Printf("%s[~]%s Sent message from %d to %d, latency: %.2f\n", Blue, Reset, from, to, latency)
 }
 
+func (l *Logger) Receive(id, size int) {
+	fmt.Printf("%s[|]%s %d received message of size %d bytes\n", Blue, Reset, id, size)
+}
+
 func (l *Logger) Broadcast(from int) {
 	fmt.Printf("%s[=]%s Broadcast from %d\n", Blue, Reset, from)
 }
