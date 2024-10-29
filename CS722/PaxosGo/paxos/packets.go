@@ -1,0 +1,14 @@
+package paxos
+
+const (
+	PTYPE_CAMPAIGN = 1 << iota
+	PTYPE_PROPOSAL
+	PTYPE_COMMIT
+)
+
+const (
+	SUCCESS = iota
+	ERR_BALLOT_TOO_LOW
+	ERR_UNKNOWN_PACKET
+	ERR_MISC
+)

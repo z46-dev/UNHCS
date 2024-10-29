@@ -9,7 +9,7 @@ import (
 type PaxosMember struct {
 	Client     *fakeserver.FakeClient
 	Key, Value string
-	ballotID   uint32
+	ballotID   uint64
 }
 
 func (m *PaxosMember) GetID() int {
@@ -43,7 +43,7 @@ func (p *PaxosProposer) Campaign() struct {
 
 	// Send a ballot to all acceptors
 	for _, acceptorID := range p.knownAcceptors {
-		p.Client.SendTo(acceptorID, []byte{byte(p.GetID()), byte(p.ballotID)})
+		p.Client.SendTo(acceptorID, fakeserver.NewWriter().U8(PTYPE_CAMPAIGN).U64(p.ballotID).U16(uint16(p.GetID())).Bytes())
 	}
 
 	// Wait for responses
@@ -85,12 +85,32 @@ func (p *PaxosProposer) Campaign() struct {
 
 type PaxosAcceptor struct {
 	*PaxosMember
-
-	AcceptedBallotID uint32
 }
 
 func NewAcceptor(client *fakeserver.FakeClient) *PaxosAcceptor {
-	return &PaxosAcceptor{PaxosMember: &PaxosMember{Client: client}}
+	var acceptor *PaxosAcceptor = &PaxosAcceptor{PaxosMember: &PaxosMember{Client: client}}
+	acceptor.Client.OnMessage = acceptor.handleMessage
+
+	return acceptor
+}
+
+func (a *PaxosAcceptor) handleMessage(data []byte) {
+	var reader *fakeserver.Reader = fakeserver.NewReader(data)
+
+	switch reader.U8() {
+	case PTYPE_CAMPAIGN:
+		{
+			var ballotID uint64 = reader.U64()
+			var proposerID int = int(reader.U16())
+
+			if ballotID <= a.ballotID {
+				a.Client.SendTo(proposerID, fakeserver.NewWriter().U8(PTYPE_CAMPAIGN).U8(ERR_BALLOT_TOO_LOW).Bytes())
+				return
+			}
+
+			a.Client.SendTo(proposerID, fakeserver.NewWriter().U8(PTYPE_CAMPAIGN).U8(SUCCESS).Bytes())
+		}
+	}
 }
 
 /**

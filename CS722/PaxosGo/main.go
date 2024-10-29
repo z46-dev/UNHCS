@@ -123,52 +123,14 @@ func TestServer() {
 	// Close after timeout
 	client1.SetClosure(3000)
 	client2.SetClosure(3000)
-
 	server.Wait()
-	fakeserver.Log.Status("All clients closed, server destroyed")
 }
 
 func TestPaxos() {
 	var server *fakeserver.FakeServer = fakeserver.NewFakeServer(fakeserver.ReliancyConfig{
 		IsUnreliable:   true,
-		MaximumLatency: 120,
-		DropChance:     .2,
-	})
-
-	var acceptors []*paxos.PaxosAcceptor = make([]*paxos.PaxosAcceptor, 3)
-	var proposer = paxos.NewProposer(fakeserver.NewFakeClient(server))
-
-	for i := 0; i < 3; i++ {
-		acceptors[i] = paxos.NewAcceptor(fakeserver.NewFakeClient(server))
-		acceptors[i].Client.OnMessage = func(content []byte) {
-			var proposerID, ballotID = content[0], content[1]
-
-			if ballotID <= byte(acceptors[i].AcceptedBallotID) {
-				acceptors[i].Client.SendTo(int(proposerID), []byte{0})
-			} else {
-				acceptors[i].AcceptedBallotID = uint32(ballotID)
-				acceptors[i].Client.SendTo(int(proposerID), []byte{1})
-			}
-		}
-
-		proposer.LearnAcceptor(acceptors[i].GetID())
-	}
-
-	var startTime = time.Now()
-	if proposer.Campaign().Success {
-		fmt.Println("Campaign successful")
-	} else {
-		fmt.Println("Campaign failed")
-	}
-
-	fmt.Printf("Campaign took %.2fs\n", float64(time.Since(startTime).Milliseconds())/1000)
-}
-
-func TestPaxosElection() {
-	var server *fakeserver.FakeServer = fakeserver.NewFakeServer(fakeserver.ReliancyConfig{
-		IsUnreliable:   true,
 		MaximumLatency: 500,
-		DropChance:     .3,
+		DropChance:     .01,
 	})
 
 	var acceptors []*paxos.PaxosAcceptor = make([]*paxos.PaxosAcceptor, 7)
@@ -176,20 +138,12 @@ func TestPaxosElection() {
 
 	for i := 0; i < 2; i++ {
 		proposers[i] = paxos.NewProposer(fakeserver.NewFakeClient(server))
+		proposers[i].Client.SetClosure(3000)
 	}
 
 	for i := 0; i < 7; i++ {
 		acceptors[i] = paxos.NewAcceptor(fakeserver.NewFakeClient(server))
-		acceptors[i].Client.OnMessage = func(content []byte) {
-			var proposerID, ballotID = content[0], content[1]
-
-			if ballotID <= byte(acceptors[i].AcceptedBallotID) {
-				acceptors[i].Client.SendTo(int(proposerID), []byte{0})
-			} else {
-				acceptors[i].AcceptedBallotID = uint32(ballotID)
-				acceptors[i].Client.SendTo(int(proposerID), []byte{1})
-			}
-		}
+		acceptors[i].Client.SetClosure(3000)
 
 		for _, proposer := range proposers {
 			proposer.LearnAcceptor(acceptors[i].GetID())
@@ -215,16 +169,16 @@ func TestPaxosElection() {
 			fmt.Println("")
 		}
 	}
+
+	server.Wait()
 }
 
 func main() {
 	var opts map[string]func() = map[string]func(){
-		"server":         TestServer,
-		"protocol":       TestProtocol,
-		"paxos":          TestPaxos,
-		"paxos-all":      TestPaxos,
-		"paxos-election": TestPaxosElection,
-		"colors":         fakeserver.ColorTest,
+		"server":   TestServer,
+		"protocol": TestProtocol,
+		"paxos":    TestPaxos,
+		"colors":   fakeserver.ColorTest,
 	}
 
 	for _, arg := range os.Args[1:] {

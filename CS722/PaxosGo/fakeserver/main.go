@@ -41,6 +41,8 @@ func (s *FakeServer) Wait() {
 	for _, client := range s.Clients {
 		<-client.done
 	}
+
+	Log.Status("All clients closed, server destroyed")
 }
 
 func (s *FakeServer) GetClient(id int) *FakeClient {
