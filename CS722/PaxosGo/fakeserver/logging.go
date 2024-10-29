@@ -68,3 +68,7 @@ func (l *Logger) Send(from, to int, latency float64) {
 func (l *Logger) Broadcast(from int) {
 	fmt.Printf("%s[=]%s Broadcast from %d\n", Blue, Reset, from)
 }
+
+func (l *Logger) Important(message string) {
+	fmt.Printf("%s[#]%s %s%s%s\n", Bold, Reset, Bold, message, Reset)
+}

@@ -35,7 +35,10 @@ func (p *PaxosProposer) LearnAcceptor(acceptorID int) {
  * 1. A majority of acceptors have responded
  * 2. A majority of responding acceptors have accepted the proposal
  */
-func (p *PaxosProposer) Campaign() bool {
+func (p *PaxosProposer) Campaign() struct {
+	Success               bool
+	Responses, Yes, Asked int
+} {
 	p.ballotID++
 
 	// Send a ballot to all acceptors
@@ -69,7 +72,15 @@ func (p *PaxosProposer) Campaign() bool {
 
 	<-waitChannel
 
-	return yes > responses/2
+	return struct {
+		Success               bool
+		Responses, Yes, Asked int
+	}{
+		Success:   yes > responses/2,
+		Responses: responses,
+		Yes:       yes,
+		Asked:     responses + remaining,
+	}
 }
 
 type PaxosAcceptor struct {
