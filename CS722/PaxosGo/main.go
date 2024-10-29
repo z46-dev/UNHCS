@@ -168,7 +168,7 @@ func TestPaxosElection() {
 	var server *fakeserver.FakeServer = fakeserver.NewFakeServer(fakeserver.ReliancyConfig{
 		IsUnreliable:   true,
 		MaximumLatency: 500,
-		DropChance:     .15,
+		DropChance:     .3,
 	})
 
 	var acceptors []*paxos.PaxosAcceptor = make([]*paxos.PaxosAcceptor, 7)
@@ -196,18 +196,24 @@ func TestPaxosElection() {
 		}
 	}
 
-	for _, proposer := range proposers {
+	fmt.Println("")
+
+	for i, proposer := range proposers {
 		fakeserver.Log.Important(fmt.Sprintf("Starting campaign for proposer %d", proposer.GetID()))
 
 		var startTime = time.Now()
 		var response = proposer.Campaign()
-		fakeserver.Log.Important(fmt.Sprintf("Campaign for proposer %d %s, %d responses, %d asked, %d said yes. Campaign took %.2fs\n", proposer.GetID(), func() string {
+		fakeserver.Log.Important(fmt.Sprintf("Campaign for proposer %d %s, %d responses, %d asked, %d said yes. Campaign took %.2fs", proposer.GetID(), func() string {
 			if response.Success {
 				return "successful"
 			} else {
 				return "failed"
 			}
 		}(), response.Responses, response.Asked, response.Yes, float64(time.Since(startTime).Milliseconds())/1000))
+
+		if i < len(proposers)-1 {
+			fmt.Println("")
+		}
 	}
 }
 
@@ -218,6 +224,7 @@ func main() {
 		"paxos":          TestPaxos,
 		"paxos-all":      TestPaxos,
 		"paxos-election": TestPaxosElection,
+		"colors":         fakeserver.ColorTest,
 	}
 
 	for _, arg := range os.Args[1:] {

@@ -29,6 +29,32 @@ const ( // AI making my life easier
 	WhiteBg    = "\033[47m"
 )
 
+func ColorTest() {
+	// Test all colors
+	fmt.Printf("%sRed%s ", Red, Reset)
+	fmt.Printf("%sGreen%s ", Green, Reset)
+	fmt.Printf("%sYellow%s ", Yellow, Reset)
+	fmt.Printf("%sBlue%s ", Blue, Reset)
+	fmt.Printf("%sMagenta%s ", Magenta, Reset)
+	fmt.Printf("%sCyan%s ", Cyan, Reset)
+	fmt.Printf("%sWhite%s\n", White, Reset)
+	fmt.Printf("%sRed%s ", BoldRed, Reset)
+	fmt.Printf("%sGreen%s ", BoldGreen, Reset)
+	fmt.Printf("%sYellow%s ", BoldYellow, Reset)
+	fmt.Printf("%sBlue%s ", BoldBlue, Reset)
+	fmt.Printf("%sMagenta%s ", BoldPurple, Reset)
+	fmt.Printf("%sCyan%s ", BoldCyan, Reset)
+	fmt.Printf("%sWhite%s\n", BoldWhite, Reset)
+	fmt.Printf("%sRed%s ", RedBg, Reset)
+	fmt.Printf("%sGreen%s ", GreenBg, Reset)
+	fmt.Printf("%sYellow%s ", YellowBg, Reset)
+	fmt.Printf("%sBlue%s ", BlueBg, Reset)
+	fmt.Printf("%sMagenta%s ", MagentaBg, Reset)
+	fmt.Printf("%sCyan%s ", CyanBg, Reset)
+	fmt.Printf("%sWhite%s ", WhiteBg, Reset)
+	fmt.Printf("%sBlack%s\n", BlackBg, Reset)
+}
+
 /**
  * Logger which makes things easier
  * since these are pretty functions
@@ -70,5 +96,5 @@ func (l *Logger) Broadcast(from int) {
 }
 
 func (l *Logger) Important(message string) {
-	fmt.Printf("%s[#]%s %s%s%s\n", Bold, Reset, Bold, message, Reset)
+	fmt.Printf("%s[#]%s %s%s%s\n", BoldRed, Reset, Bold, message, Reset)
 }
