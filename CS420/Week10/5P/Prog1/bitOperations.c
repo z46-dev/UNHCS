@@ -21,7 +21,7 @@ int convertDate(char* inputFile, char* outputFile) {
     Date date;
 
     while (fscanf(in, "%d/%d/%d", &date.month, &date.day, &date.year) != EOF) {
-        short int binDate = date.year | (date.day << 7) | (date.month << 11);
+        short int binDate = date.year | (date.month << 7) | (date.day << 11);
 
         // Write binary date to output file
         fprintf(out, "0x%x\n", binDate);

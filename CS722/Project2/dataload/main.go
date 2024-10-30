@@ -14,6 +14,18 @@ var URLS = []string{
 	"https://www.gutenberg.org/cache/epub/10897/pg10897.txt",
 	"https://www.gutenberg.org/cache/epub/84/pg84.txt",
 	"https://www.gutenberg.org/cache/epub/1342/pg1342.txt",
+	"https://www.gutenberg.org/cache/epub/25344/pg25344.txt",
+	"https://www.gutenberg.org/cache/epub/43/pg43.txt",
+	"https://www.gutenberg.org/cache/epub/6130/pg6130.txt",
+	"https://www.gutenberg.org/cache/epub/22381/pg22381.txt",
+	"https://www.gutenberg.org/cache/epub/14977/pg14977.txt",
+	"https://www.gutenberg.org/cache/epub/22062/pg22062.txt",
+	"https://www.gutenberg.org/cache/epub/66286/pg66286.txt",
+	"https://www.gutenberg.org/cache/epub/52356/pg52356.txt",
+	"https://www.gutenberg.org/cache/epub/2600/pg2600.txt",
+	"https://www.gutenberg.org/cache/epub/1257/pg1257.txt",
+	"https://www.gutenberg.org/cache/epub/345/pg345.txt",
+	"https://www.gutenberg.org/cache/epub/74167/pg74167.txt",
 }
 
 var filterOutWords = []string{
@@ -84,7 +96,7 @@ func LoadDocument(url string, bucketSize int) Document {
 
 outer:
 	for _, word := range words {
-		cleanWord := strings.ToLower(strings.Trim(word, ".,;:!?\"'()[]{}"))
+		cleanWord := strings.ToLower(strings.Trim(word, ".,;:!?\"'‘’“”()[]{}"))
 
 		if len(cleanWord) == 0 {
 			continue
@@ -127,4 +139,18 @@ func LoadAllDocuments(bucketSize int) []Document {
 	waitGroup.Wait()
 
 	return docs
+}
+
+func SizeOfDocuments(docs []Document) int {
+	size := 0
+
+	for _, doc := range docs {
+		for _, bucket := range doc.Buckets {
+			for _, word := range bucket.Words {
+				size += len(word)
+			}
+		}
+	}
+
+	return size
 }
