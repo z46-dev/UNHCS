@@ -170,7 +170,7 @@ func MainDocuments() {
 
 	for {
 		fmt.Print("Enter a phrase to search for in the documents: ")
-		_, err := fmt.Scanln(&phrase)
+		_, err := fmt.Scanf("%s", &phrase)
 
 		if err != nil {
 			fmt.Println("Error reading from stdin:", err)
@@ -180,30 +180,7 @@ func MainDocuments() {
 		var words []string = strings.Fields(phrase)
 		var results []WordOccurrence
 
-		for _, word := range words {
-			result, ok := searchDB[word]
-
-			if ok {
-				results = append(results, result)
-			}
-		}
-
-		if len(results) == 0 {
-			fmt.Printf("Phrase \"%s\" not found\n", phrase)
-			continue
-		}
-
-		fmt.Printf("Phrase \"%s\" found in %d document(s):\n", phrase, len(results))
-
-		for _, result := range results {
-			var urls []string
-
-			for url, count := range result.URLs {
-				urls = append(urls, fmt.Sprintf("- %s (%d)", url, count))
-			}
-
-			fmt.Printf("Word \"%s\" found %d times in %d document(s):\n%s\n", result.Word, result.Count, len(result.URLs), strings.Join(urls, "\n"))
-		}
+		// Implement a thing to figure out the best results
 	}
 }
 
