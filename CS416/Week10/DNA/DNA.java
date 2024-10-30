@@ -133,7 +133,7 @@ public class DNA {
         }
 
         for (DNARecord record : records) {
-            if (record.getProfile().equals(profile)) {
+            if (record != null && record.getProfile().equals(profile)) {
                 System.out.printf("Matched %s\n", record);
                 return;
             }
