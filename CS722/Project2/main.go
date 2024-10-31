@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 	"strings"
 	"time"
 
@@ -165,22 +167,86 @@ func MainDocuments() {
 	// 	}
 	// }
 
-	// Find documents and sort based on an input phrase
-	var phrase string
-
 	for {
 		fmt.Print("Enter a phrase to search for in the documents: ")
-		_, err := fmt.Scanf("%s", &phrase)
+
+		reader := bufio.NewReader(os.Stdin)
+		inputstr, err := reader.ReadString('\n')
 
 		if err != nil {
 			fmt.Println("Error reading from stdin:", err)
 			return
 		}
 
-		var words []string = strings.Fields(phrase)
-		var results []WordOccurrence
+		words := strings.Fields(string(inputstr))
 
-		// Implement a thing to figure out the best results
+		if len(words) == 0 {
+			fmt.Println("No words entered")
+			continue
+		}
+
+		// Get score of each document
+		type DocumentScore struct {
+			Document dataload.Document
+			Score    int
+			WordsHas map[string]bool
+		}
+
+		var documentScores []DocumentScore
+
+		for _, word := range words {
+			word = strings.Trim(strings.ToLower(word), " .,;:!?\"'‘’“”()[]{}")
+
+			result, ok := searchDB[word]
+
+			if !ok {
+				fmt.Printf("Word \"%s\" not found\n", word)
+				continue
+			}
+
+			for url, count := range result.URLs {
+				for _, doc := range docs {
+					if doc.URL == url {
+						var found bool
+						for _, score := range documentScores {
+							if score.Document.URL == doc.URL {
+								found = true
+								score.Score += count
+								score.WordsHas[word] = true
+								break
+							}
+						}
+
+						if !found {
+							documentScores = append(documentScores, DocumentScore{
+								Document: doc,
+								Score:    count,
+								WordsHas: map[string]bool{word: true},
+							})
+						}
+					}
+				}
+			}
+
+			// Increase score if it has more words
+			for i, score := range documentScores {
+				documentScores[i].Score *= len(score.WordsHas)
+			}
+
+			// Sort by score
+			for i := 0; i < len(documentScores); i++ {
+				for j := i + 1; j < len(documentScores); j++ {
+					if documentScores[i].Score < documentScores[j].Score {
+						documentScores[i], documentScores[j] = documentScores[j], documentScores[i]
+					}
+				}
+			}
+
+			// Print results
+			for i, score := range documentScores {
+				fmt.Printf("%d. %s (%d)\n", i+1, score.Document.URL, score.Score)
+			}
+		}
 	}
 }
 

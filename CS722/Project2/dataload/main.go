@@ -96,7 +96,7 @@ func LoadDocument(url string, bucketSize int) Document {
 
 outer:
 	for _, word := range words {
-		cleanWord := strings.ToLower(strings.Trim(word, ".,;:!?\"'‘’“”()[]{}"))
+		cleanWord := strings.ToLower(strings.Trim(word, " .,;:!?\"'‘’“”()[]{}"))
 
 		if len(cleanWord) == 0 {
 			continue
