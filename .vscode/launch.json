@@ -2,6 +2,13 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "java",
+            "name": "Hanoi",
+            "request": "launch",
+            "mainClass": "Hanoi",
+            "projectName": "UNHCS_8e530f24"
+        },
+        {
             "name": "Attach to Node Functions",
             "type": "node",
             "request": "attach",
