@@ -130,7 +130,7 @@ func TestPaxos() {
 	var server *fakeserver.FakeServer = fakeserver.NewFakeServer(fakeserver.ReliancyConfig{
 		IsUnreliable:   true,
 		MaximumLatency: 500,
-		DropChance:     .01,
+		DropChance:     .5,
 	})
 
 	var acceptors []*paxos.PaxosAcceptor = make([]*paxos.PaxosAcceptor, 7)
@@ -156,8 +156,8 @@ func TestPaxos() {
 		fakeserver.Log.Important(fmt.Sprintf("Starting campaign for proposer %d", proposer.GetID()))
 
 		var startTime = time.Now()
-		var response = proposer.Campaign()
-		fakeserver.Log.Important(fmt.Sprintf("Campaign for proposer %d %s, %d responses, %d asked, %d said yes. Campaign took %.2fs", proposer.GetID(), func() string {
+		var response = proposer.Campaign(server.Config.MaximumLatency * 1.5)
+		fakeserver.Log.Important(fmt.Sprintf("Campaign for proposer %d, ballot %d %s, %d responses, %d asked, %d said yes. Campaign took %.2fs", proposer.GetID(), proposer.BallotID, func() string {
 			if response.Success {
 				return "successful"
 			} else {
