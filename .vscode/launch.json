@@ -3,6 +3,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "TreeApp",
+            "request": "launch",
+            "mainClass": "TreeApp",
+            "projectName": "UNHCS_8e530f24"
+        },
+        {
+            "type": "java",
             "name": "Hanoi",
             "request": "launch",
             "mainClass": "Hanoi",
