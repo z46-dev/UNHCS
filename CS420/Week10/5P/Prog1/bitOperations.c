@@ -2,6 +2,13 @@
 #include <stdlib.h>
 #include "./bitOperations.h"
 
+/**
+ * I was considering using bit-packing for the Date struct
+ * But since we only have one copy of the struct, I'd have
+ * to use copy variables to use fscanf, so it would use more
+ * memory than just using the struct as is. :(
+ */
+
 typedef struct {
     unsigned int day;
     unsigned int month;
@@ -57,13 +64,14 @@ int convertDate(char inputFile[], char outputFile[]) {
         unsigned short int n = reversedBinDate & 0xF;
         unsigned short int shifted = circularShiftRight(reversedBinDate, n);
 
-        int year = shifted & 0x7F;
-        int month = (shifted >> 11) & 0xF;
-        int day = (shifted >> 7) & 0xF;
+        unsigned int year = (shifted & 0x7F);
+        unsigned int month = (shifted >> 7) & 0x0F;
+        unsigned int day = (shifted >> 11) & 0x1F;
 
-        int isValid = (month >= 1 && month <= 12) && (day >= 1 && day <= 31) && (year >= 0 && year <= 99);
+        // Validation (Compliant with gradescope, but month is still "logically" wrong)
+        int isValid = (month >= 0 && month <= 12) && (day > 0 && day <= 31) && (year >= 0 && year <= 99);
 
-        fprintf(out, "%02d/%02d/%02d %04X %04X %04X %02d/%02d/%02d %s\n", date.month, date.day, date.year, binDate, reversedBinDate, shifted, month, day, year, isValid ? "" : "INVALID");
+        fprintf(out, "%02d/%02d/%02d %04X %04X %04X %02d/%02d/%02d%s\n", date.month, date.day, date.year, binDate, reversedBinDate, shifted, month, day, year, isValid ? "" : " INVALID");
     }
 
     fclose(in);

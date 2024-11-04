@@ -26,10 +26,9 @@ int readData(char filename[], ipInfo_t ipInfo[]) {
 
 void computeValues(ipInfo_t ipInfo[], int n) {
     for (int i = 0; i < n; i++) {
-        short int oa, ob, oc, od;
+        unsigned int oa, ob, oc, od;
 
-        sscanf(ipInfo[i].ipAddressDot, "%hd.%hd.%hd.%hd", &oa, &ob, &oc, &od);
-
+        sscanf(ipInfo[i].ipAddressDot, "%u.%u.%u.%u", &oa, &ob, &oc, &od);
         ipInfo[i].ipAddress = (oa << 24) | (ob << 16) | (oc << 8) | od;
 
         if (oa < 128) {
@@ -44,11 +43,36 @@ void computeValues(ipInfo_t ipInfo[], int n) {
             ipInfo[i].networkClass = 'E';
         }
 
-        sscanf(ipInfo[i].subnetMaskDot, "%hd.%hd.%hd.%hd", &oa, &ob, &oc, &od);
-
+        sscanf(ipInfo[i].subnetMaskDot, "%u.%u.%u.%u", &oa, &ob, &oc, &od);
         ipInfo[i].subnetMask = (oa << 24) | (ob << 16) | (oc << 8) | od;
-        ipInfo[i].totalSubnets = pow(2, __builtin_popcount(ipInfo[i].subnetMask << ((ipInfo[i].networkClass == 'A') ? 8 : (ipInfo[i].networkClass == 'B') ? 16 : 24)));
-        ipInfo[i].totalHosts = pow(2, 32 - __builtin_popcount(ipInfo[i].subnetMask)) - 2;
+
+        int defaultNetworkBits = 0;
+        switch (ipInfo[i].networkClass) {
+            case 'A':
+                defaultNetworkBits = 8;
+                break;
+            case 'B':
+                defaultNetworkBits = 16;
+                break;
+            case 'C':
+                defaultNetworkBits = 24;
+                break;
+        }
+
+        // Count bits in host portion
+        ipInfo[i].totalSubnets = 0;
+        ipInfo[i].totalHosts = 0;
+
+        for (int j = 0; j < 32 - defaultNetworkBits; j++) {
+            if ((ipInfo[i].subnetMask & (1 << j)) != 0) {
+                ipInfo[i].totalSubnets++;
+            } else {
+                ipInfo[i].totalHosts++;
+            }
+        }
+        
+        ipInfo[i].totalSubnets = 1 << ipInfo[i].totalSubnets;
+        ipInfo[i].totalHosts = (1 << ipInfo[i].totalHosts) - 2;
     }
 }
 
