@@ -71,14 +71,3 @@ int convertDate(char inputFile[], char outputFile[]) {
 
     return NORMAL_SUCCESSFUL_COMPLETION;
 }
-
-int main(int argc, char** argv) {
-    if (argc != 3) {
-        printf("Usage: %s <input file> <output file>\n", argv[0]);
-        return 1;
-    }
-
-    convertDate(argv[1], argv[2]);
-
-    return 0;
-}

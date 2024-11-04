@@ -62,23 +62,8 @@ void printResults(char filename[], ipInfo_t ipInfo[], int n) {
     fprintf(file, "    Octet IP Address   IP Address   Octet Subnet Mask  Subnet Mask   Class Subnets   Hosts\n");
 
     for (int i = 0; i < n; i++) {
-        fprintf(file, "     % 15s     %08x     % 15s     %x       %c % 7d% 8d\n", ipInfo[i].ipAddressDot, ipInfo[i].ipAddress, ipInfo[i].subnetMaskDot, ipInfo[i].subnetMask, ipInfo[i].networkClass, ipInfo[i].totalSubnets, ipInfo[i].totalHosts);
+        fprintf(file, "     %15s     %08x     %15s     %x       %c % 7d% 8d\n", ipInfo[i].ipAddressDot, ipInfo[i].ipAddress, ipInfo[i].subnetMaskDot, ipInfo[i].subnetMask, ipInfo[i].networkClass, ipInfo[i].totalSubnets, ipInfo[i].totalHosts);
     }
 
     fclose(file);
-}
-
-int main() {
-    ipInfo_t ipInfo[MAX_RECORDS];
-    int n = readData("addresses2.txt", ipInfo);
-
-    if (n == -1) {
-        printf("Error reading file\n");
-        return 1;
-    }
-
-    computeValues(ipInfo, n);
-    printResults("ipAddressResults.txt", ipInfo, n);
-
-    return 0;
 }
