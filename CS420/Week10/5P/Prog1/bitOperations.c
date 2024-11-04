@@ -68,8 +68,7 @@ int convertDate(char inputFile[], char outputFile[]) {
         unsigned int month = (shifted >> 7) & 0x0F;
         unsigned int day = (shifted >> 11) & 0x1F;
 
-        // Validation (Compliant with gradescope, but month is still "logically" wrong)
-        int isValid = (month >= 0 && month <= 12) && (day > 0 && day <= 31) && (year >= 0 && year <= 99);
+        int isValid = (month > 0 && month <= 12) && (day > 0 && day <= 31) && (year >= 0 && year <= 99);
 
         fprintf(out, "%02d/%02d/%02d %04X %04X %04X %02d/%02d/%02d%s\n", date.month, date.day, date.year, binDate, reversedBinDate, shifted, month, day, year, isValid ? "" : " INVALID");
     }
