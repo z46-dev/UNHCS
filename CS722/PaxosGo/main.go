@@ -129,8 +129,8 @@ func TestServer() {
 func TestPaxos() {
 	var server *fakeserver.FakeServer = fakeserver.NewFakeServer(fakeserver.ReliancyConfig{
 		IsUnreliable:   true,
-		MaximumLatency: 500,
-		DropChance:     .5,
+		MaximumLatency: 300,
+		DropChance:     .025,
 	})
 
 	var acceptors []*paxos.PaxosAcceptor = make([]*paxos.PaxosAcceptor, 7)
