@@ -26,6 +26,10 @@ var URLS = []string{
 	"https://www.gutenberg.org/cache/epub/1257/pg1257.txt",
 	"https://www.gutenberg.org/cache/epub/345/pg345.txt",
 	"https://www.gutenberg.org/cache/epub/74167/pg74167.txt",
+	"https://gutenberg.org/cache/epub/15/pg15.txt",
+	"https://gutenberg.org/cache/epub/44585/pg44585.txt",
+	"https://gutenberg.org/cache/epub/17149/pg17149.txt",
+	"https://gutenberg.org/cache/epub/34114/pg34114.txt",
 }
 
 var filterOutWords = []string{

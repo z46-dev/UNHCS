@@ -21,18 +21,19 @@ type PaxosProposer struct {
 
 	knownAcceptors []int
 
-	ballotHandler func(*fakeserver.Reader)
+	ballotHandlers map[uint64]func(*fakeserver.Reader)
 }
 
 func NewProposer(client *fakeserver.FakeClient) *PaxosProposer {
-	var proposer *PaxosProposer = &PaxosProposer{PaxosMember: &PaxosMember{Client: client}}
+	var proposer *PaxosProposer = &PaxosProposer{PaxosMember: &PaxosMember{Client: client}, knownAcceptors: make([]int, 0), ballotHandlers: make(map[uint64]func(*fakeserver.Reader))}
 	proposer.Client.OnMessage = func(data []byte) {
 		var reader *fakeserver.Reader = fakeserver.NewReader(data)
 
 		switch reader.U8() {
 		case PTYPE_CAMPAIGN:
-			if proposer.ballotHandler != nil {
-				proposer.ballotHandler(reader)
+			ballotID := reader.U64()
+			if proposer.ballotHandlers[ballotID] != nil {
+				proposer.ballotHandlers[ballotID](reader)
 			}
 		default:
 			panic("Proposer doesn't know how to handle message!")
@@ -46,58 +47,69 @@ func (p *PaxosProposer) LearnAcceptor(acceptorID int) {
 	p.knownAcceptors = append(p.knownAcceptors, acceptorID)
 }
 
+const (
+	CAMPAIGN_RESULT_SUCCESS = iota
+	CAMPAIGN_RESULT_REJECTED
+	CAMPAIGN_RESULT_TIMEOUT
+)
+
 /**
  * Conditions for a successful campaign:
  * 1. A majority of acceptors have responded
  * 2. A majority of responding acceptors have accepted the proposal
  */
 func (p *PaxosProposer) Campaign(timeout float64) struct {
-	Success               bool
-	Responses, Yes, Asked int
+	Success                   bool
+	Asked, Responded, Yes, No int
 } {
 	p.BallotID++
 
-	// Send a ballot to all acceptors
 	for _, acceptorID := range p.knownAcceptors {
 		p.Client.SendTo(acceptorID, fakeserver.NewWriter().U8(PTYPE_CAMPAIGN).U64(p.BallotID).U16(uint16(p.GetID())).Bytes())
 	}
 
-	// Wait for responses
 	var (
-		//responses   map[int]bool
-		remaining, responses, yes int = len(p.knownAcceptors), 0, 0
-		waitChannel                   = make(chan bool)
+		asked, remaining, yes int = len(p.knownAcceptors), len(p.knownAcceptors), 0
+		waitChannel               = make(chan int)
 	)
 
-	p.ballotHandler = func(reader *fakeserver.Reader) {
+	p.ballotHandlers[p.BallotID] = func(reader *fakeserver.Reader) {
 		remaining--
-		responses++
 
 		if reader.U8() == SUCCESS {
 			yes++
+		} else {
+			waitChannel <- CAMPAIGN_RESULT_REJECTED
+			return
 		}
 
 		if remaining == 0 {
-			waitChannel <- true
+			waitChannel <- CAMPAIGN_RESULT_SUCCESS
 		}
 	}
 
-	// Timeout of 5s
 	go func() {
 		<-time.After(time.Duration(timeout) * time.Millisecond)
-		waitChannel <- false
+		waitChannel <- CAMPAIGN_RESULT_TIMEOUT
 	}()
 
-	<-waitChannel
+	if <-waitChannel == CAMPAIGN_RESULT_REJECTED {
+		fakeserver.Log.Important("Campaign rejected, retrying")
+		delete(p.ballotHandlers, p.BallotID)
+		return p.Campaign(timeout)
+	}
+
+	delete(p.ballotHandlers, p.BallotID)
 
 	return struct {
-		Success               bool
-		Responses, Yes, Asked int
+		Success                   bool
+		Asked, Responded, Yes, No int
 	}{
-		Success:   yes > responses/2 && responses > (responses+remaining)/2,
-		Responses: responses,
+		Success:   yes > asked/2 && yes > remaining/2,
+		Asked:     asked,
+		Responded: asked - remaining,
 		Yes:       yes,
-		Asked:     responses + remaining,
+		No:        asked - yes,
 	}
 }
 
@@ -122,12 +134,12 @@ func (a *PaxosAcceptor) handleMessage(data []byte) {
 			var proposerID int = int(reader.U16())
 
 			if ballotID <= a.BallotID {
-				a.Client.SendTo(proposerID, fakeserver.NewWriter().U8(PTYPE_CAMPAIGN).U8(ERR_BALLOT_TOO_LOW).Bytes())
+				a.Client.SendTo(proposerID, fakeserver.NewWriter().U8(PTYPE_CAMPAIGN).U64(ballotID).U8(ERR_BALLOT_TOO_LOW).Bytes())
 				return
 			}
 
-			a.Client.SendTo(proposerID, fakeserver.NewWriter().U8(PTYPE_CAMPAIGN).U8(SUCCESS).Bytes())
-			a.BallotID++
+			a.Client.SendTo(proposerID, fakeserver.NewWriter().U8(PTYPE_CAMPAIGN).U64(ballotID).U8(SUCCESS).Bytes())
+			a.BallotID = ballotID
 		}
 	}
 }

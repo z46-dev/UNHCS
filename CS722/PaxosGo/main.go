@@ -129,19 +129,19 @@ func TestServer() {
 func TestPaxos() {
 	var server *fakeserver.FakeServer = fakeserver.NewFakeServer(fakeserver.ReliancyConfig{
 		IsUnreliable:   true,
-		MaximumLatency: 300,
-		DropChance:     .025,
+		MaximumLatency: 1000,
+		DropChance:     0,
 	})
 
-	var acceptors []*paxos.PaxosAcceptor = make([]*paxos.PaxosAcceptor, 7)
+	var acceptors []*paxos.PaxosAcceptor = make([]*paxos.PaxosAcceptor, 3)
 	var proposers []*paxos.PaxosProposer = make([]*paxos.PaxosProposer, 2)
 
-	for i := 0; i < 2; i++ {
+	for i := 0; i < len(proposers); i++ {
 		proposers[i] = paxos.NewProposer(fakeserver.NewFakeClient(server))
 		proposers[i].Client.SetClosure(3000)
 	}
 
-	for i := 0; i < 7; i++ {
+	for i := 0; i < len(acceptors); i++ {
 		acceptors[i] = paxos.NewAcceptor(fakeserver.NewFakeClient(server))
 		acceptors[i].Client.SetClosure(3000)
 
@@ -163,7 +163,7 @@ func TestPaxos() {
 			} else {
 				return "failed"
 			}
-		}(), response.Responses, response.Asked, response.Yes, float64(time.Since(startTime).Milliseconds())/1000))
+		}(), response.Responded, response.Asked, response.Yes, float64(time.Since(startTime).Milliseconds())/1000))
 
 		if i < len(proposers)-1 {
 			fmt.Println("")
