@@ -63,6 +63,7 @@ func mapFunc(bucket dataload.Bucket) []WordOccurrence {
 	for _, occurrence := range wordMap {
 		result = append(result, *occurrence)
 	}
+
 	return result
 }
 
@@ -139,33 +140,6 @@ func MainDocuments() {
 	start = time.Now()
 	searchDB := mapreduce.MapReduce(mapFunc, shuffleFunc, reduceFunc, finalReducer, buckets)
 	fmt.Printf("MapReduce completed in %s\n", time.Since(start))
-
-	// var word string
-
-	// for {
-	// 	fmt.Print("Enter a word to find its count: ")
-	// 	_, err := fmt.Scanln(&word)
-
-	// 	if err != nil {
-	// 		fmt.Println("Error reading from stdin:", err)
-	// 		return
-	// 	}
-
-	// 	result, ok := searchDB[word]
-
-	// 	if ok {
-	// 		var urls []string
-
-	// 		for url, count := range result.URLs {
-	// 			urls = append(urls, fmt.Sprintf("- %s (%d)", url, count))
-	// 		}
-
-	// 		fmt.Printf("Word \"%s\" found %d times in %d document(s):\n%s\n", word, result.Count, len(result.URLs), strings.Join(urls, "\n"))
-
-	// 	} else {
-	// 		fmt.Printf("Word \"%s\" not found\n", word)
-	// 	}
-	// }
 
 	for {
 		fmt.Print("Enter a phrase to search for in the documents: ")
