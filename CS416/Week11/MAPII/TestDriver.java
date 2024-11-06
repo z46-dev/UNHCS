@@ -21,7 +21,8 @@ public class TestDriver {
         lm.remove(1);
         lm.remove(4);
 
-        System.out.println(lm.containsKey(3));
+        System.out.println(lm.getList().getHead());
+        System.out.println(lm.getList().getTail());
     }
 
     // public static void main(String[] args) {
