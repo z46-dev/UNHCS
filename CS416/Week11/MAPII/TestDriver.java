@@ -17,10 +17,11 @@ public class TestDriver {
         lm.put(3, "more");
         lm.put(4, "stuff");
 
+        lm.remove(2);
         lm.remove(1);
         lm.remove(4);
 
-        System.out.println(lm.get(3));
+        System.out.println(lm.containsKey(3));
     }
 
     // public static void main(String[] args) {
