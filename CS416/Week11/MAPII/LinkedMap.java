@@ -68,11 +68,7 @@ public class LinkedMap<K, V> implements Map<K, V> {
                 return this.key.equals(e.key) && this.value.equals(e.value);
             }
 
-            if (o instanceof String) {
-                return this.key.equals(o);
-            }
-
-            return false;
+            return this.key.equals(o);
         }
     }
 
