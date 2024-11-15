@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #define MAX_SIZE 1042
 #define BUFFER_SIZE 128
 
@@ -100,7 +101,9 @@ int readFile(char *fileName, char **words) {
     char buffer[BUFFER_SIZE];
     int i = 0;
 
-    while (fscanf(file, "%s", buffer) != EOF) {
+    // Scan until new line
+    while (fgets(buffer, sizeof(buffer), file) != NULL) {
+        buffer[strcspn(buffer, "\n")] = '\0';
         words[i] = (char *)malloc(strlen(buffer) + 1);
         strcpy(words[i], buffer);
         i++;
@@ -125,6 +128,23 @@ int isPalindrome(char *word) {
     return 1;
 }
 
+char* turnComplexPalindromeIntoSimplePalindrome(char *input) {
+    // Just return a string without any non alphabetic chars
+    char *output = (char *)malloc(strlen(input) + 1);
+    
+    int j = 0;
+    for (int i = 0; i < strlen(input); i++) {
+        if (isalpha(input[i])) {
+            output[j] = input[i];
+            j++;
+        }
+    }
+
+    output[j] = '\0';
+
+    return output;
+}
+
 int main(int argc, char **argv) {
     if (argc != 2) {
         printf("Usage: %s <file>\n", argv[0]);
@@ -139,19 +159,18 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    printf("Read %d words\n", size);
-
     LinkedList list = {NULL, NULL};
 
     for (int i = 0; i < size; i++) {
         Node *node = (Node *)malloc(sizeof(Node));
         node->word = words[i];
-        node->isPalindrome = isPalindrome(strlwr(words[i]));
+        node->isPalindrome = isPalindrome(turnComplexPalindromeIntoSimplePalindrome(strlwr(words[i])));
         node->next = NULL;
         insert(&list, node);
     }
 
     print(&list);
+    printf("\n");
 
     Node *current = list.head;
     while (current != NULL) {
