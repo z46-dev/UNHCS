@@ -1,20 +1,15 @@
-#define MAX_SIZE 12
-#define STATE_UNSTABLE 0
-#define STATE_STABLE 1
-
-typedef struct {
-    float temp, oldTemp;
-    int state, flips;
-} TempState_t;
+#include "./heatFlow.h"
 
 int main() {
-    TempState_t temps[MAX_SIZE][MAX_SIZE];
+    int rows, cols;
+    double tempA, tempB, T1, T2, stabilityFactor;
+    read_data("in0", &rows, &cols, &tempA, &tempB, &T1, &T2, &stabilityFactor);
 
-    for (int i = 0; i < MAX_SIZE; i++) {
-        for (int j = 0; j < MAX_SIZE; j++) {
-            temps[i][j].temp = 0;
-            temps[i][j].state = STATE_UNSTABLE;
-            temps[i][j].flips = 0;
-        }
-    }
+    GridCell_t old[ROW][COL];
+    GridCell_t new[ROW][COL];
+
+    initialize_plate(old, rows, cols, T1, T2);
+    print_plate(old, rows, cols, tempA, tempB, TEMPERATURE);
+
+    return 0;
 }
