@@ -1,78 +1,42 @@
 #include "./heatFlow.h"
 #include <stdio.h>
-#include <math.h>
 
-int read_data(char *fileName, int *rows, int *cols, double *tempA, double *tempB, double *T1, double *T2, double *stabilityFactor) {
-    FILE *file = fopen(fileName, "r");
-    if (file == NULL) {
+int main(int argc, char *argv[]) {
+    int rows, cols;
+    double tempA, tempB, T1, T2, stabilityFactor;
+    
+    if (read_data(argv[1], &rows, &cols, &tempA, &tempB, &T1, &T2, &stabilityFactor) == -1) {
+        printf("Error reading file\n");
         return -1;
     }
 
-    fscanf(file, "%d %d %lf %lf %lf %lf %lf", rows, cols, tempA, tempB, T1, T2, stabilityFactor);
-    fclose(file);
+    printf("   Grid Size: %dx%d\n", rows, cols);
+    printf("   HEATER/COOLER  A TEMPERATURE: %10.2f\n", tempA);
+    printf("   HEATER/COOLER  B TEMPERATURE: %10.2f\n", tempB);
+    printf("   INITIAL PLATE TEMPERATURE #1: %10.2f\n", T1);
+    printf("   INITIAL PLATE TEMPERATURE #2: %10.2f\n\n", T2);
+    printf("   STABILIZE CRITERION: %18.2f\n\n\n\n\n", stabilityFactor);
+
+    GridCell_t old[ROW][COL];
+    GridCell_t new[ROW][COL];
+
+    initialize_plate(new, rows, cols, T1, T2);
+    initialize_plate(old, rows, cols, T1, T2);
+
+    print_plate(new, rows, cols, tempA, tempB, TEMPERATURE);
+
+    int stableCells, counts = 0;
+
+    do {
+        stableCells = compute_plate(new, old, rows, cols, tempA, tempB, stabilityFactor);
+        printf("    #### PLATE %d #### (Stable cells:%d)\n", ++counts, stableCells);
+
+        print_plate(new, rows, cols, tempA, tempB, TEMPERATURE);
+    } while (stableCells < rows * cols);
+    
+    printf("    #### PLATE %d #### (Number of Flips in each cell)\n", counts);
+    print_plate(new, rows, cols, tempA, tempB, FLIP);
+
+
     return 0;
-}
-
-void initialize_plate(GridCell_t array[][COL], int rows, int cols, double T1, double T2) {
-    // Quadrants
-    /*
-     * 1 2
-     * 2 1
-     */
-
-    for (int i = 0; i < rows * cols; i ++) {
-        for (int j = 0; j < cols; j ++) {
-            array[i][j].temperature = (i < rows / 2) ? (j < cols / 2) ? T1 : T2 : (j < cols / 2) ? T2 : T1;
-            array[i][j].stability = 1;
-            array[i][j].flip = 0;
-        }
-    }
-}
-
-/*
-                    77.00
-          -------------------------------------
-          |  60.50 |  60.50 |  35.00 |  35.00 |
-          -------------------------------------
-          |  60.50 |  60.50 |  35.00 |  35.00 |
-          -------------------------------------
-          |  60.50 |  60.50 |  35.00 |  35.00 |
-  77.00  -------------------------------------  23.10  
-          |  35.00 |  35.00 |  60.50 |  60.50 |
-          -------------------------------------
-          |  35.00 |  35.00 |  60.50 |  60.50 |
-          -------------------------------------
-          |  35.00 |  35.00 |  60.50 |  60.50 |
-          -------------------------------------
-                    23.10
-*/
-void print_plate(GridCell_t array[][COL], int rows, int cols, double tempA, double tempB, int attribute) {
-    printf("                    %.2f\n", tempA);
-    
-    for (int i = 0; i < rows; i++) {
-        printf("          ");
-        for (int j = 0; j < cols; j++) {
-            switch (attribute) {
-                case TEMPERATURE:
-                    printf("| %6.2f ", array[i][j].temperature);
-                    break;
-                case STABILITY:
-                    printf("| %6d ", array[i][j].stability);
-                    break;
-                case FLIP:
-                    printf("| %6d ", array[i][j].flip);
-                    break;
-            }
-        }
-
-        printf("|\n"); // Close the row
-        
-        printf("          ");
-        for (int j = 0; j < cols; j++) {
-            printf("---------");
-        }
-        printf("-\n");
-    }
-    
-    printf("                    %.2f\n", tempB); // Print bottom temperature boundary
 }
