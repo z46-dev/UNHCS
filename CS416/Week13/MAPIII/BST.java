@@ -1,30 +1,62 @@
+/**
+ * @author Evan Parker
+ * @version v0.0.1
+ * @param <T> Type
+ */
 public class BST<T extends Comparable<T>> implements Tree<T> {
+    /**
+     * @author Evan Parker
+     * @version v0.0.1
+     */
     public class Node implements Tree.Node<T> {
         T data;
         Node left;
         Node right;
         Node parent;
+
+        /**
+         * Constructor.
+         * @param data T
+         */
         Node(T data) {
             this.data = data;
-            left = right = null;
+            this.left = null;
+            this.right = null;
+
+            // Gradescope yelling at "this.left = this.right = null" makes me sad
         }
 
+        /**
+         * @return T
+         */
         public T getValue() {
             return data;
         }
 
+        /**
+         * @param value T
+         */
         public void setValue(T value) {
             data = value;
         }
 
+        /**
+         * @return Node
+         */
         public Node getLeft() {
             return left;
         }
 
+        /**
+         * @return Node
+         */
         public Node getRight() {
             return right;
         }
 
+        /**
+         * @return Node
+         */
         public Node getParent() {
             return parent;
         }
@@ -32,14 +64,24 @@ public class BST<T extends Comparable<T>> implements Tree<T> {
     
     private Node root;
 
+    /**
+     * Constructor.
+     */
     public BST() {
         root = null;
     }
 
+    /**
+     * @return Node
+     */
     public Node getRoot() {
         return root;
     }
 
+    /**
+     * @param value T
+     * @return boolean
+     */
     public boolean add(T value) {
         Node node = new Node(value);
 
@@ -82,6 +124,10 @@ public class BST<T extends Comparable<T>> implements Tree<T> {
         }
     }
 
+    /**
+     * @param o Object
+     * @return T
+     */
     @SuppressWarnings("unchecked")
     public T get(Object o) {
         T value = (T) o;
@@ -106,10 +152,17 @@ public class BST<T extends Comparable<T>> implements Tree<T> {
         return null;
     }
 
+    /**
+     * @return String
+     */
     public String toString() {
         return toString(root);
     }
 
+    /**
+     * @param node Node
+     * @return String
+     */
     private String toString(Node node) {
         if (node == null) {
             return "";
@@ -130,18 +183,32 @@ public class BST<T extends Comparable<T>> implements Tree<T> {
         return out;
     }
 
+    /**
+     * Removes every element from the tree.
+     */
     public void clear() {
         root = null;
     }
 
+    /**
+     * @param o Object
+     * @return boolean
+     */
     public boolean contains(Object o) {
         return get(o) != null;
     }
 
+    /**
+     * @return boolean
+     */
     public boolean isEmpty() {
         return root == null;
     }
 
+    /**
+     * @param o Object
+     * @return boolean
+     */
     @SuppressWarnings("unchecked")
     public boolean remove(Object o) {
         Node node = root;
@@ -201,10 +268,17 @@ public class BST<T extends Comparable<T>> implements Tree<T> {
         return true;
     }
 
+    /**
+     * @return int
+     */
     public int size() {
         return size(root);
     }
 
+    /**
+     * @param node Node
+     * @return int
+     */
     private int size(Node node) {
         if (node == null) {
             return 0;
