@@ -22,7 +22,9 @@ public abstract class Sort {
             while (s.hasNextLine()) {
                 Scanner line = new Scanner(s.nextLine());
                 samples.add(new Sample(line.nextInt(), line.nextDouble()));
+                line.close();
             }
+            s.close();
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
