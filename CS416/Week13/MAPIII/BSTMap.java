@@ -11,7 +11,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map<K, V> {
      * @param <K> Comparable Key
      * @param <V> Value
      */
-    public class Entry<K extends Comparable<K>, V> implements Map.Entry<K, V> {
+    public class Entry<K extends Comparable<K>, V> implements Map.Entry<K, V>, Comparable<Entry<K, V>> {
         K key;
         V value;
 
@@ -70,20 +70,156 @@ public class BSTMap<K extends Comparable<K>, V> implements Map<K, V> {
         }
 
         /**
-         * @param o Object
+         * @param e Entry
          * @return int
          */
-        @SuppressWarnings("unchecked")
-        public int compareTo(Object o) {
-            if (o instanceof Entry) {
-                Entry<K, V> e = (Entry<K, V>) o;
-                return key.compareTo(e.key);
-            }
+        public int compareTo(Entry<K, V> e) {
+            return key.compareTo(e.key);
+        }
 
-            K k = (K) o;
+        /**
+         * @param k K
+         * @return int
+         */
+        public int compareTo(K k) {
             return key.compareTo(k);
         }
     }
 
-    
+    private BST<BSTMap<K, V>.Entry<K, V>> bst;
+
+    /**
+     * Constructor.
+     */
+    public BSTMap() {
+        this.bst = new BST<BSTMap<K, V>.Entry<K, V>>();
+    }
+
+    /**
+     * Returns thr tree.
+     * @return BST
+     */
+    public BST<BSTMap<K, V>.Entry<K, V>> getTree() {
+        return this.bst;
+    }
+
+    /**
+     * Puts a key and value into the tree.
+     * 
+     * @param key K
+     * @param value V
+     * @return value
+     */
+    public V put(K key, V value) {
+        BSTMap<K, V>.Entry<K, V> entry = new BSTMap.Entry(key, value);
+        BSTMap<K, V>.Entry<K, V> oldEntry = this.bst.get(entry);
+
+        if (oldEntry != null) {
+            V oldValue = oldEntry.value;
+            oldEntry.value = value;
+            return oldValue;
+        }
+
+        this.bst.add(entry);
+        return null;
+    }
+
+    /**
+     * Puts a key and value into the tree if the key is not already in the tree.
+     * @param key K
+     * @param value V
+     * @return value
+     */
+    public V putIfAbsent(K key, V value) {
+        BSTMap<K, V>.Entry<K, V> entry = new BSTMap.Entry(key, value);
+        
+        BSTMap<K, V>.Entry<K, V> oldEntry = this.bst.get(entry);
+
+        if (oldEntry != null && oldEntry.value != null) {
+            return oldEntry.value;
+        }
+
+        this.bst.add(entry);
+        return value;
+    }
+
+    /**
+     * Returns a string representation of the tree.
+     * @return String
+     */
+    public String toString() {
+        return this.bst.toString();
+    }
+
+    /**
+     * Clears the tree.
+     */
+    public void clear() {
+        this.bst.clear();
+    }
+
+    /**
+     * Returns the value of a key.
+     * @param key K
+     * @return V
+     */
+    public V get(K key) {
+        BSTMap<K, V>.Entry<K, V> entry = new BSTMap.Entry(key, null);
+        BSTMap<K, V>.Entry<K, V> oldEntry = this.bst.get(entry);
+
+        if (oldEntry != null) {
+            return oldEntry.value;
+        }
+
+        return null;
+    }
+
+    /**
+     * Checks if the tree contains a key.
+     * @param key K
+     * @return boolean
+     */
+    public boolean containsKey(K key) {
+        BSTMap<K, V>.Entry<K, V> entry = new BSTMap.Entry(key, null);
+        BSTMap<K, V>.Entry<K, V> oldEntry = this.bst.get(entry);
+
+        if (oldEntry != null) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Removes a key from the tree.
+     * @param key K
+     * @return V
+     */
+    public V remove(K key) {
+        BSTMap<K, V>.Entry<K, V> entry = new BSTMap.Entry(key, null);
+        BSTMap<K, V>.Entry<K, V> oldEntry = this.bst.get(entry);
+
+        if (oldEntry != null) {
+            this.bst.remove(oldEntry);
+            return oldEntry.value;
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns the size of the tree.
+     * @return int
+     */
+    public int size() {
+        return this.bst.size();
+    }
+
+    /**
+     * Checks if the tree is empty.
+     * @return boolean
+     */
+    public boolean isEmpty() {
+        return this.bst.isEmpty();
+    }
 }

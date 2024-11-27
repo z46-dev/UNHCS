@@ -3,7 +3,7 @@
  * @version v0.0.1
  * @param <T> Type
  */
-public class BST<T extends Comparable<T>> implements Tree<T> {
+public class BST<T extends Comparable> implements Tree<T> {
     /**
      * @author Evan Parker
      * @version v0.0.1
@@ -99,9 +99,9 @@ public class BST<T extends Comparable<T>> implements Tree<T> {
             int cmp = current.data.compareTo(value);
 
             if (cmp < 0) {
-                current = current.left;
+                current = current.right;
                 if (current == null) {
-                    parent.left = node;
+                    parent.right = node;
                     node.parent = parent;
                     return true;
                 }
@@ -110,9 +110,9 @@ public class BST<T extends Comparable<T>> implements Tree<T> {
             }
 
             if (cmp > 0) {
-                current = current.right;
+                current = current.left;
                 if (current == null) {
-                    parent.right = node;
+                    parent.left = node;
                     node.parent = parent;
                     return true;
                 }
@@ -137,12 +137,12 @@ public class BST<T extends Comparable<T>> implements Tree<T> {
             int cmp = current.data.compareTo(value);
 
             if (cmp < 0) {
-                current = current.left;
+                current = current.right;
                 continue;
             }
 
             if (cmp > 0) {
-                current = current.right;
+                current = current.left;
                 continue;
             }
 
@@ -156,31 +156,57 @@ public class BST<T extends Comparable<T>> implements Tree<T> {
      * @return String
      */
     public String toString() {
-        return toString(root);
+        String output = toString(root, 0, 0);
+
+        if (output.endsWith("\n")) {
+            output = output.substring(0, output.length() - 1);
+        }
+
+        return output;
     }
 
     /**
      * @param node Node
+     * @param indentStage int
+     * @param leaning int
      * @return String
      */
-    private String toString(Node node) {
+    private String toString(Node node, int indentStage, int leaning) {
+        /**
+         *     L even
+         * the
+         *         L undo
+         *     R word
+         *             L zag
+         *         R zig
+         *             R zoo
+         */
+
         if (node == null) {
             return "";
         }
 
-        String out = "";
+        StringBuilder sb = new StringBuilder();
 
-        if (node.left != null) {
-            out += "L " + toString(node.left) + " ";
+        sb.append(toString(node.left, indentStage + 1, -1));
+
+        for (int i = 0; i < indentStage; i++) {
+            sb.append("      ");
         }
 
-        out += node.data;
-
-        if (node.right != null) {
-            out += " R " + toString(node.right);
+        if (leaning != 0) {
+            sb.append(leaning == -1 ? "L " : "R ");
         }
 
-        return out;
+        sb.append(node.data);
+
+        if (node.right != null || indentStage > 0) {
+            sb.append("\n");
+        }
+
+        sb.append(toString(node.right, indentStage + 1, 1));
+
+        return sb.toString();
     }
 
     /**
@@ -213,60 +239,90 @@ public class BST<T extends Comparable<T>> implements Tree<T> {
     public boolean remove(Object o) {
         Node node = root;
         T value = (T) o;
-
+    
+        // Search for the node to be removed
         while (node != null) {
             int cmp = node.data.compareTo(value);
-
+    
             if (cmp < 0) {
-                node = node.left;
-                continue;
-            }
-
-            if (cmp > 0) {
                 node = node.right;
                 continue;
             }
-
+    
+            if (cmp > 0) {
+                node = node.left;
+                continue;
+            }
+    
             break;
         }
-
+    
+        // Node not found
         if (node == null) {
             return false;
         }
-
-        Node parent = node.parent;
-        Node replacement = null;
-        boolean left = false;
-
-        if (node.left != null && node.right != null) {
-            Node temp = node.right;
-
-            while (temp.left != null) {
-                temp = temp.left;
+    
+        // Case 1: Node has no left child
+        if (node.left == null) {
+            if (node.parent == null) {
+                root = node.right;
+            } else {
+                if (node.parent.data.compareTo(node.data) < 0) {
+                    node.parent.right = node.right;
+                } else {
+                    node.parent.left = node.right;
+                }
             }
-
-            replacement = temp;
-        } else if (node.left != null) {
-            replacement = node.left;
-            left = true;
-        } else if (node.right != null) {
-            replacement = node.right;
+    
+            if (node.right != null) {
+                node.right.parent = node.parent;
+            }
+            return true;
         }
-
-        if (parent == null) {
-            root = replacement;
-        } else if (left) {
-            parent.left = replacement;
+    
+        // Case 2: Node has no right child
+        if (node.right == null) {
+            if (node.parent == null) {
+                root = node.left;
+            } else {
+                if (node.parent.data.compareTo(node.data) < 0) {
+                    node.parent.right = node.left;
+                } else {
+                    node.parent.left = node.left;
+                }
+            }
+    
+            if (node.left != null) {
+                node.left.parent = node.parent;
+            }
+            return true;
+        }
+    
+        // Case 3: Node has two children
+        Node successor = node.right;
+        Node successorParent = node;
+    
+        while (successor.left != null) {
+            successorParent = successor;
+            successor = successor.left;
+        }
+    
+        // Replace node's data with successor's data
+        node.data = successor.data;
+    
+        // Remove successor node
+        if (successorParent != node) {
+            successorParent.left = successor.right;
         } else {
-            parent.right = replacement;
+            successorParent.right = successor.right;
         }
-
-        if (replacement != null) {
-            replacement.parent = parent;
+    
+        if (successor.right != null) {
+            successor.right.parent = successorParent;
         }
-
+    
         return true;
-    }
+    }    
 
     /**
      * @return int
@@ -285,5 +341,25 @@ public class BST<T extends Comparable<T>> implements Tree<T> {
         }
 
         return 1 + size(node.left) + size(node.right);
+    }
+
+    /**
+     * Debugger main.
+     * @param args String[]
+     */
+    public static void main(String[] args) {
+        //    Input: [thing, word, stuff, and, both, zoo, yes]
+
+        BST<String> bst = new BST<>();
+        for (String word : new String[] {"thing", "word", "stuff", "and", "both", "zoo", "yes" }) {
+            bst.add(word);
+        }
+
+        System.out.println(bst);
+        System.out.println(bst.size());
+
+        bst.remove("stuff");
+        System.out.println(bst);
+        System.out.println(bst.size());
     }
 }
