@@ -4,7 +4,7 @@
 /*=======================================================*/
 #include <stdio.h>
 #include <stdlib.h>
-#include "equake.h"
+#include "./equake.h"
 /*=======================================================*/
 
 int main(int argc, char *argv[])
@@ -18,15 +18,16 @@ int main(int argc, char *argv[])
 			fprintf(stderr,"Error creating data structures\n");
 			return(-1);
 		}
-		status = printSummary(ctrl, argv[2]); //second argument is output/summary file name
-
-		printDailyTotalsArray(ctrl); 
 		
-		printMagnitudeTotalsArray(ctrl);
-		
-		printDepthTotalsArray(ctrl);
+		// status = printSummary(ctrl, argv[2]); //second argument is output/summary file name
 
-		cleanUp(ctrl);
+		// printDailyTotalsArray(ctrl); 
+		
+		// printMagnitudeTotalsArray(ctrl);
+		
+		// printDepthTotalsArray(ctrl);
+
+		// cleanUp(ctrl);
 	}
 	else {
 		fprintf(stderr, "Incorrect number of arguments\n");
