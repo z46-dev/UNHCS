@@ -1,5 +1,5 @@
-equakeFunctions: earthquakeFunctions.c
+equakeFunctions:
 	gcc -c earthquakeFunctions.c
 
-equake: equakeFunctions equake.c
+equake: equakeFunctions
 	gcc -o equake equake.c earthquakeFunctions.o
