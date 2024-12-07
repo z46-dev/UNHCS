@@ -201,6 +201,7 @@ int printSummary(void *control, char *filename) {
     }
 
     fclose(outputFile);
+    return 1;
 }
 
 /*Arguments: Pointer to Control structure
@@ -240,7 +241,6 @@ void printDailyTotalsArray(void *control) {
 
     for (int i = 0; i < controlPtr->numberOfRegions; i++) {
         region_header_t *regionHeader = controlPtr->regions[i];
-        equake_data_t *data = regionHeader->data;
 
         printf("\n------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
         printf("%18s |", regionHeader->region_name);
@@ -293,7 +293,6 @@ void printMagnitudeTotalsArray(void *control) {
 
     for (int i = 0; i < controlPtr->numberOfRegions; i++) {
         region_header_t *regionHeader = controlPtr->regions[i];
-        equake_data_t *data = regionHeader->data;
         
         printf("\n---------------------------------------------------------------------\n");
         printf("%18s |", regionHeader->region_name);
@@ -346,7 +345,6 @@ void printDepthTotalsArray(void *control) {
 
     for (int i = 0; i < controlPtr->numberOfRegions; i++) {
         region_header_t *regionHeader = controlPtr->regions[i];
-        equake_data_t *data = regionHeader->data;
         
         printf("\n---------------------------------------------------------------------\n");
         printf("%18s |", regionHeader->region_name);
@@ -357,8 +355,6 @@ void printDepthTotalsArray(void *control) {
 
     printf("\n---------------------------------------------------------------------\n");
 }
-
-// Hello, the table formatting has ruined my evening. Thank you for your consideration.
 
 /*Arguments: Pointer to Control structure
 	All dynamic memory allocated must be freed. Care must be taken to free up any  member element in the linked list data structures
