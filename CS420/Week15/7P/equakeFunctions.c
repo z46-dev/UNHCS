@@ -99,7 +99,10 @@ void *readData(char *filename) {
 
         filesList_t *temp = filesList;
         filesList = filesList->last;
+        free(temp->filename);
         free(temp);
+
+        fclose(regionFile);
     }
 
     return control;
@@ -328,7 +331,9 @@ void printDepthTotalsArray(void *control) {
 
         while (data != NULL) {
             int depth = (int)data->depth;
-            controlPtr->depthTotals[i][depth / 10]++;
+            if (depth / 10 < 10) {
+                controlPtr->depthTotals[i][depth / 10]++;
+            }
             data = data->next;
         }
     }
@@ -379,7 +384,7 @@ void cleanUp(void *control) {
         free(regionHeader->region_name);
         free(regionHeader);
     }
-
+    
     for (int i = 0; i < controlPtr->numberOfRegions; i++) {
         free(controlPtr->dailyTotals[i]);
         free(controlPtr->magnitudeTotals[i]);
