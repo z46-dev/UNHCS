@@ -1,0 +1,48 @@
+************************************************************************************
+EARTHQUAKE SUMMARY FROM DATA FILE: NorthEast.txt
+Geographical Range: Latitudes 40.750000 to 48.869999, Longitudes 66.160004 to 77.209999
+Total Number of Earthquakes recorded: 50
+Depth Range (Kilometers): 0.020000 to 30.059999
+Magnitude Range: 0.8 to 3.6
+Largest magnitude of 3.6 occured on 02:58:02.75 at: PQ,151.0KM-NNW-OF-FORT-KENT,ME
+
+************************************************************************************
+EARTHQUAKE SUMMARY FROM DATA FILE: Central.txt
+Geographical Range: Latitudes 31.676001 to 37.244999, Longitudes 80.170998 to 104.977997
+Total Number of Earthquakes recorded: 257
+Depth Range (Kilometers): 0.100000 to 23.100000
+Magnitude Range: 0.7 to 4.3
+Largest magnitude of 4.3 occured on 13:01:24 at: 5km(3mi)-SSW-of-Danville,KS
+
+************************************************************************************
+EARTHQUAKE SUMMARY FROM DATA FILE: InterMountain.txt
+Geographical Range: Latitudes 36.439999 to 48.407001, Longitudes 109.947998 to 119.912003
+Total Number of Earthquakes recorded: 193
+Depth Range (Kilometers): 0.000000 to 16.799999
+Magnitude Range: 0.1 to 4.0
+Largest magnitude of 4.0 occured on 10:20:28 at: 13km(8mi)-NE-of-Wimer-Place,NV
+
+************************************************************************************
+EARTHQUAKE SUMMARY FROM DATA FILE: NorthWest.txt
+Geographical Range: Latitudes 40.670300 to 51.406700, Longitudes 118.479202 to 125.206703
+Total Number of Earthquakes recorded: 251
+Depth Range (Kilometers): 0.000000 to 58.200001
+Magnitude Range: 0.0 to 3.5
+Largest magnitude of 3.5 occured on 23:24:59 at: 13.2km(8.2mi)ENE(62.azimuth)from-Olympia,WA
+
+************************************************************************************
+EARTHQUAKE SUMMARY FROM DATA FILE: NorthernCanada.txt
+Geographical Range: Latitudes 60.020000 to 77.879997, Longitudes 57.910000 to 141.529999
+Total Number of Earthquakes recorded: 70
+Depth Range (Kilometers): 1.000000 to 35.000000
+Magnitude Range: 1.3 to 5.0
+Largest magnitude of 5.0 occured on 18:37:31 at: 191km-E-of-Norman-Wells,NT.
+
+************************************************************************************
+EARTHQUAKE SUMMARY FROM DATA FILE: Alaska.txt
+Geographical Range: Latitudes 60.002998 to 64.995598, Longitudes 145.063705 to 160.951004
+Total Number of Earthquakes recorded: 762
+Depth Range (Kilometers): 0.000000 to 162.300003
+Magnitude Range: 1.2 to 4.2
+Largest magnitude of 4.2 occured on 09:58:27.1 at: SOUTH-AND-CENTRAL-ALASKA
+

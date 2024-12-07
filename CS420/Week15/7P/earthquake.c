@@ -19,15 +19,15 @@ int main(int argc, char *argv[])
 			return(-1);
 		}
 		
-		// status = printSummary(ctrl, argv[2]); //second argument is output/summary file name
+		status = printSummary(ctrl, argv[2]); //second argument is output/summary file name
 
-		// printDailyTotalsArray(ctrl); 
+		printDailyTotalsArray(ctrl); 
 		
-		// printMagnitudeTotalsArray(ctrl);
+		printMagnitudeTotalsArray(ctrl);
 		
-		// printDepthTotalsArray(ctrl);
+		printDepthTotalsArray(ctrl);
 
-		// cleanUp(ctrl);
+		cleanUp(ctrl);
 	}
 	else {
 		fprintf(stderr, "Incorrect number of arguments\n");
